@@ -1,0 +1,59 @@
+<resources>
+    <string name="app_name">A1</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- Main Activity code Strings -->
+    <string name="linkpt1">http://</string>
+    <string name="linkpt2">:8080/COMP4601SDA/rest/sda/</string>
+    <string name="tagDelete">delete/</string>
+    <string name="search">search/</string>
+    <string name="documents">documents</string>
+    <string name="status_code_200">200</string>
+    <string name="status_code_204">204</string>
+    <string name="param_name">name</string>
+    <string name="param_id">id</string>
+    <string name="param_text">text</string>
+    <string name="param_tags">tags</string>
+    <string name="param_links">links</string>
+    <string name="toast_creation_success">Document creation succeeded</string>
+    <string name="toast_creation_failure">Document creation failed</string>
+    <string name="toast_delete_success">Document deletion succeeded</string>
+    <string name="toast_delete_failure">Document deletion failed</string>
+    <string name="toast_update_success">Document update succeeded</string>
+    <string name="toast_update_failure">Document update failed</string>
+
+    <!-- Main Activity UI Strings -->
+    <string name="ip_address_title_text">IP Address:</string>
+    <string name="ip_address_hint_text">IP Address here (Ex: 192.xxx.x.x)</string>
+    <string name="name_title_text">Name:</string>
+    <string name="name_hint_text">Document name here</string>
+    <string name="id_title_text">ID:</string>
+    <string name="id_hint_text">Document ID here</string>
+    <string name="text_title_text">Text:</string>
+    <string name="text_hint_text">Document content here</string>
+    <string name="tags_title_text">Tags:</string>
+    <string name="tags_hint_text">Document tags here (must be tag1:tag2:tag3:etc)</string>
+    <string name="links_title_text">Links:</string>
+    <string name="links_hint_text">Enter IDs of documents that you want to link to (separated by a comma)</string>
+    <string name="document_library_title_text">View Document Library:</string>
+    <string name="document_search_title_text">View Search Results:</string>
+    <string name="switch_button_text">SWITCH</string>
+
+    <string name="create_button_text">CREATE</string>
+    <string name="edit_button_text">UPDATE</string>
+    <string name="search_button_text">SEARCH</string>
+
+    <string name="get_button_text">VIEW</string>
+
+    <string name="view_lib_text">VIEW DOCUMENT LIBRARY</string>
+
+    <string name="ip_extra_name">IP</string>
+
+    <string name="delete_button_text">DELETE</string>
+    <string name="title_activity_create">CreateActivity</string>
+    <string name="title_activity_update">UpdateActivity</string>
+    <string name="title_activity_view">ViewActivity</string>
+    <string name="title_activity_delete">DeleteActivity</string>
+    <string name="title_activity_search">SearchActivity</string>
+    <string name="title_activity_view_lib">ViewLibActivity</string>
+</resources>
