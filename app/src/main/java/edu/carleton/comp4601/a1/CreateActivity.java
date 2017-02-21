@@ -16,6 +16,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.w3c.dom.*;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -73,6 +75,8 @@ public class CreateActivity extends AppCompatActivity {
         tags = tagsContentView.getText().toString();
         links = linksContentView.getText().toString();
         String url = getString(R.string.linkpt1) + ipAddress + getString(R.string.linkpt2);
+
+
 
         StringRequest createRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override

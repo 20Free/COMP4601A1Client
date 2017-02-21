@@ -16,6 +16,12 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,6 +46,10 @@ public class UpdateActivity extends AppCompatActivity {
     //Declare Volley variables
     private RequestQueue queue;
     private int statusCode;
+
+    private Document doc;
+    private byte[] objArray;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,8 +88,37 @@ public class UpdateActivity extends AppCompatActivity {
         tags = tagsContentView.getText().toString();
         links = linksContentView.getText().toString();
 
+        doc = new Document();
+        doc.setName(name);
+        doc.setId(Integer.parseInt(id));
+        doc.setText(text);
+        ArrayList<String> tagList = new ArrayList<>();
+        tagList.addAll(Arrays.asList(tags.split(":")));
+        doc.setTags(tagList);
+        ArrayList<String> linkList = new ArrayList<>();
+        linkList.addAll(Arrays.asList(links.split(" ")));
+        doc.setLinks(linkList);
+
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ObjectOutput out;
+        objArray = null;
+        try {
+            out = new ObjectOutputStream(bos);
+            out.writeObject(doc);
+            out.flush();
+            objArray = bos.toByteArray();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                bos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         String url = getString(R.string.linkpt1) + ipAddress + getString(R.string.linkpt2) + id;
-        StringRequest updateRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+        StringRequest updateRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 if (String.valueOf(statusCode).equals(getString(R.string.status_code_200))) {
@@ -104,14 +143,15 @@ public class UpdateActivity extends AppCompatActivity {
             }
 
             @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                params.put(getString(R.string.param_name), name);
-                params.put(getString(R.string.param_id), id);
-                params.put(getString(R.string.param_text), text);
-                params.put(getString(R.string.param_tags), tags);
-                params.put(getString(R.string.param_links), links);
-                return params;
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/xml");
+                return super.getHeaders();
+            }
+
+            @Override
+            public Object getTag() {
+                return doc;
             }
         };
         queue.add(updateRequest);

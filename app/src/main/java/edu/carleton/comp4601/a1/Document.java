@@ -1,12 +1,13 @@
 package edu.carleton.comp4601.a1;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Map;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class Document{
+public class Document implements Serializable{
 	private Integer id;
 	private Float score;
 	private String name;
@@ -15,8 +16,8 @@ public class Document{
 	private ArrayList<String> links;
 
 	public Document() {
-		tags = new ArrayList<String>();
-		links = new ArrayList<String>();
+		tags = new ArrayList<>();
+		links = new ArrayList<>();
 	}
 
 	public Document(Integer id) {
