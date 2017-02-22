@@ -11,17 +11,10 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,13 +36,8 @@ public class UpdateActivity extends AppCompatActivity {
     private String tags;
     private String links;
 
-    //Declare Volley variables
-    private RequestQueue queue;
     private int statusCode;
-
-    private Document doc;
-    private byte[] objArray;
-
+    private RequestQueue queue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +54,9 @@ public class UpdateActivity extends AppCompatActivity {
         tagsContentView = (EditText) findViewById(R.id.tagsContentViewUpdate);
         linksContentView = (EditText) findViewById(R.id.linksContentViewUpdate);
 
+        queue = Volley.newRequestQueue(this);
+        statusCode = 0;
+
         //init other useful items
         ipAddress = getIntent().getExtras().getString(getString(R.string.ip_extra_name));
         ipAddressContentText.setText(ipAddress);
@@ -74,10 +65,6 @@ public class UpdateActivity extends AppCompatActivity {
         text = "";
         tags = "";
         links = "";
-
-        //init Volley variables
-        queue = Volley.newRequestQueue(this);
-        statusCode = 0;
     }
 
     public void update(View view) {
@@ -88,54 +75,25 @@ public class UpdateActivity extends AppCompatActivity {
         tags = tagsContentView.getText().toString();
         links = linksContentView.getText().toString();
 
-        doc = new Document();
-        doc.setName(name);
-        doc.setId(Integer.parseInt(id));
-        doc.setText(text);
-        ArrayList<String> tagList = new ArrayList<>();
-        tagList.addAll(Arrays.asList(tags.split(":")));
-        doc.setTags(tagList);
-        ArrayList<String> linkList = new ArrayList<>();
-        linkList.addAll(Arrays.asList(links.split(" ")));
-        doc.setLinks(linkList);
-
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ObjectOutput out;
-        objArray = null;
-        try {
-            out = new ObjectOutputStream(bos);
-            out.writeObject(doc);
-            out.flush();
-            objArray = bos.toByteArray();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                bos.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
         String url = getString(R.string.linkpt1) + ipAddress + getString(R.string.linkpt2) + id;
-        StringRequest updateRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
+        StringRequest request = new StringRequest(Request.Method.POST, url, new com.android.volley.Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                if (String.valueOf(statusCode).equals(getString(R.string.status_code_200))) {
-                    Toast.makeText(getApplicationContext(), getString(R.string.toast_update_success), Toast.LENGTH_LONG).show();
-                } else if (String.valueOf(statusCode).equals(getString(R.string.status_code_204))) {
-                    Toast.makeText(getApplicationContext(), getString(R.string.toast_update_failure), Toast.LENGTH_LONG).show();
+                if(String.valueOf(statusCode).equals(getString(R.string.status_code_200))) {
+                    Toast.makeText(getApplicationContext(),getString(R.string.toast_update_success),Toast.LENGTH_LONG).show();
+                } else if(String.valueOf(statusCode).equals(getString(R.string.status_code_204))) {
+                    Toast.makeText(getApplicationContext(),getString(R.string.toast_update_failure),Toast.LENGTH_LONG).show();
                 }
             }
-        }, new Response.ErrorListener() {
+        }, new com.android.volley.Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
             }
         }) {
             @Override
-            protected Response<String> parseNetworkResponse(NetworkResponse response) {
-                if (response != null) {
+            protected com.android.volley.Response<String> parseNetworkResponse(NetworkResponse response) {
+                if(response!= null) {
                     statusCode = response.statusCode;
                     return super.parseNetworkResponse(response);
                 } else
@@ -143,17 +101,18 @@ public class UpdateActivity extends AppCompatActivity {
             }
 
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Content-Type", "application/xml");
-                return super.getHeaders();
-            }
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("name", name);
+                params.put("id", id);
+                params.put("text", text);
+                params.put("tags", tags);
+                params.put("links", links);
 
-            @Override
-            public Object getTag() {
-                return doc;
+                return params;
             }
         };
-        queue.add(updateRequest);
+
+        queue.add(request);
     }
 }

@@ -7,7 +7,7 @@ import java.util.Map;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class Document implements Serializable{
+public class Document{
 	private Integer id;
 	private Float score;
 	private String name;
